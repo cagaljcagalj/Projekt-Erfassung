@@ -9,6 +9,8 @@ import org.json.*;
 import java.io.*;
 import java.text.*;
 import java.util.*;
+import android.content.Context;
+import android.content.Intent;
 
 public class BackupReceiver extends android.content.BroadcastReceiver {
  public static void schedule(Context c){
@@ -17,7 +19,7 @@ public class BackupReceiver extends android.content.BroadcastReceiver {
   PendingIntent pi=PendingIntent.getBroadcast(c,101,i,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
   am.setInexactRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+3*60*60*1000L,3*60*60*1000L,pi);
  }
- @Override public void onReceive(Context c){final PendingResult pending=goAsync();new Thread(()->{try{write(c);}finally{pending.finish();}}).start();}
+ @Override public void onReceive(Context c, Intent intent) {final PendingResult pending=goAsync();new Thread(()->{try{write(c);}finally{pending.finish();}}).start();}
  public static void write(Context c){
   String folder=c.getSharedPreferences("auto_backup",0).getString("folder","");if(folder.isEmpty())return;
   try{
